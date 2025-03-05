@@ -1,9 +1,8 @@
-import config_um # CHANGE this to name of your tool / repo
+import config_um 
 from pathlib import Path
 
 from utils_config import ConfigLoader
 
-# CHANGE the path 'config_project_template' to your tool / repo name
 CONFIGS_PATH = Path(config_um.__file__).parent / "configs"
 
 def test_load_configs_valid():

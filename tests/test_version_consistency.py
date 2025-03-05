@@ -1,6 +1,6 @@
 import pytest
 import importlib.metadata
-import config_um # CHANGE this to your tool / repo name
+import config_um 
 
 def test_version_consistency():
     """Ensure __version__ and importlib.metadata.version report the same value."""
