@@ -3,7 +3,7 @@ from .config_loader import load_config_values
 from pathlib import Path
 
 # Edit 'config_project_template' to the appropriate repo/tool name here
-__version__ = importlib.metadata.version(__package__ or "config_project_template") 
+__version__ = importlib.metadata.version(__package__ or "config_um") 
 
 def get_data_path():
     package_root = Path(__file__).parent.resolve()
