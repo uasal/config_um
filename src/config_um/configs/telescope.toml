@@ -4,7 +4,7 @@ title = "Ultramarine Telescope Baseline Configuration"
 [general]
 f_number = 15.0 # [unitless] (design requirement - need a proper value from Zemax by Heejoo)
 f_eff = "42.047m" # effective focal length at center of FoV (from general report in Zemax analysis tab)
-version = 'Lazuli Mark 10' # Daewook Kim's Space Coronagraph Optical Team Design
+version = 'UM Mark 10' # Daewook Kim's Space Coronagraph Optical Team Design
 field_bias = '0.2degree' # From Zemax model, Surface 1, tilt about X
 design_wavelength = '633.0nm' # From Zemax
 
