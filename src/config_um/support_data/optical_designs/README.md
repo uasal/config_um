@@ -12,7 +12,7 @@ The spacing between the optics is not expected to change, except to compensate f
 ### Optical design files for only the telescope
 
 
-#### Lazuli_Mark-11
+#### Ultramarine_Mark-11
 
 Initial release which was used in the preliminary stop analysis.
 This is known to not be the final optical design as it has known issues with scattered light minimization and the instrument envelopes.

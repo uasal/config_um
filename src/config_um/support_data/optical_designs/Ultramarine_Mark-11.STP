@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION ((), '1');
-FILE_NAME ('C:\\Users\\hchoi\\Documents\\Zemax\\Objects\\CAD Files\\Lazuli_Mark-11_DKim1_Release_HChoi02.STP', '2025-03-20T10:43:59', ('Unknown'), ('Unknown'), 'HarmonyWare STEP v2.0.6', 'HarmonyWare Translators', '');
+FILE_NAME ('C:\\Users\\hchoi\\Documents\\Zemax\\Objects\\CAD Files\\Ultramarine_Mark-11_DKim1_Release_HChoi02.STP', '2025-03-20T10:43:59', ('Unknown'), ('Unknown'), 'HarmonyWare STEP v2.0.6', 'HarmonyWare Translators', '');
 FILE_SCHEMA (('CONFIG_CONTROL_DESIGN'));
 ENDSEC;
 
