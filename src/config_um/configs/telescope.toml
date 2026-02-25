@@ -34,7 +34,7 @@ opd_map = '$UASAL_ARCHIVE/projects/um/mirror_data/opd_maps/M2_map.fits' # genera
 temp_nominal = '-6Celsius' # 2025-03-10 Initial thermal model estimate (took mean of max and min)
 temp_nominal_delta = '11Kelvin' #  +/- value about nominal - 2025-03-10 Initial thermal model estimate (took max-min range/2)
 temp_stability = '4Kelvin/hour' # +/- value about nominal - WAG by P. Ingraham based on max-min and guesstimate after slew
-coating_refl = "coatings/NIST_1st_surface_Al.csv" # NIST reference curve for aged bare aluminum reflectivity
+coating_refl = "coatings/qe_ag_fss99_profile_mirror.fits" #  nominal silver curve for Denton FSS99 
 coating_refl_rms = 0.005  # 2025-03-10 Assumption carried over from STP
 
 baffle_OD = '0.0m' # Not applicable, maintaining keyword for continuity with STP
@@ -52,7 +52,7 @@ opd_map = '$UASAL_ARCHIVE/projects/um/mirror_data/opd_maps/M3_map.fits' # genera
 temp_nominal = '10Celsius' # 2025-03-10 Initial thermal model estimate (took mean of max and min)
 temp_nominal_delta = '6Kelvin' #  +/- value about nominal - 2025-03-10 Initial thermal model estimate (took max-min range/2)
 temp_stability = '2Kelvin/hour' # +/- value about nominal - WAG by P. Ingraham based on max-min and guesstimate after slew
-coating_refl = "coatings/NIST_1st_surface_Al.csv" # NIST reference curve for aged bare aluminum reflectivity
+coating_refl = "coatings/qe_ag_fss99_profile_mirror.fits" #  nominal silver curve for Denton FSS99 
 coating_refl_rms = 0.005  # 2025-03-10 Assumption carried over from STP
 
 # quaternary mirror properties
@@ -66,5 +66,5 @@ opd_map = '$UASAL_ARCHIVE/projects/um/mirror_data/opd_maps/M4_map.fits' # genera
 temp_nominal = '10Celsius' # 2025-03-10 Initial thermal model estimate (took mean of max and min)
 temp_nominal_delta = '6Kelvin' #  +/- value about nominal - 2025-03-10 Initial thermal model estimate (took max-min range/2)
 temp_stability = '2Kelvin/hour' # +/- value about nominal - WAG by P. Ingraham based on max-min and guesstimate after slew
-coating_refl = "coatings/NIST_1st_surface_Al.csv" # NIST reference curve for aged bare aluminum reflectivity
+coating_refl = "coatings/qe_ag_fss99_profile_mirror.fits" #  nominal silver curve for Denton FSS99 
 coating_refl_rms = 0.005
