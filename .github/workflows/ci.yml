@@ -84,6 +84,8 @@ jobs:
               f.write(f"{errors}")
             else:
               f.write("**No pytest failures reported**")
+          with open("${{env.SUMMARY}}", "r") as f:
+              print(f.read())
 
     - name: Upload Pytest Log Artifacts
       uses: actions/upload-artifact@v7
@@ -95,7 +97,7 @@ jobs:
 
     - name: Comment PR with Test Summary
       if: github.event_name == 'pull_request' && (success() || failure())
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@v3
       with:
         header: summary-table
         path: ${{env.SUMMARY}}
