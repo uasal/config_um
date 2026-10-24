@@ -1,9 +1,16 @@
-name: CI Pipeline
+name: Run pytests for package
 
 on:
   push:
     branches:
       - '**'
+  pull_request:
+    branches:
+      - '**'
+    types: [opened,reopened,edited,synchronize]
+  # Allowing workflow to run from actions manually
+  workflow_dispatch:
+
 jobs:
   check-tomls-python3-12:
     runs-on: ubuntu-latest
