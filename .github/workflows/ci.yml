@@ -10,6 +10,11 @@ on:
   # Allowing workflow to run from actions manually
   workflow_dispatch:
 
+# For PR commenting with summary
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   check-tomls-python3-12:
     runs-on: ubuntu-latest
@@ -37,18 +42,25 @@ jobs:
     - name: Run Tests
       if: success() || failure()
       run: |
+        TEST_EXIT_CODE=0
         mkdir logs/
-        pytest --md-report --md-report-verbose=1 --md-report-zeros=number --md-report-output=logs/summary.md
+        pytest --md-report --md-report-verbose=1 --md-report-zeros=number --md-report-output=logs/summary.md > logs/pytest_raw_output.txt || TEST_EXIT_CODE=\$?
         pytest -p no:md-report -p no:warnings --no-header -r fE > logs/errors.log
         pytest -p no:md-report --no-header -q -W ignore -r w > logs/warnings.log
 
-        PASSED=$(python -c "import re; f=open('pytest_output.txt').read(); match=re.search(r'(\d+) passed', f); print(match.group(1) if match else '0')")
-        FAILED=$(grep -oP '\d+(?= failed)' pytest_output.txt || echo "0")pip install pytest-md-report
+        exit $TEST_EXIT_CODE
 
     - name: Upload Pytest Log Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: pytest-logs
         path: logs/*
         retention-days: 7
+
+    - name: Comment PR with Test Summary
+      if: github.event_name == 'pull_request' && (success() || failure())
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        filePath: logs/summary.md
+        comment_tag: pytest_summary # Prevents spam
