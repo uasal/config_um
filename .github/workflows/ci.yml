@@ -5,8 +5,7 @@ on:
     branches:
       - '**'
   pull_request:
-    branches:
-      - '**'
+    branches: [ main, develop ]
     types: [opened,reopened,edited,synchronize]
   # Allowing workflow to run from actions manually
   workflow_dispatch:
@@ -23,20 +22,33 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
+        cache: 'pip'
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest toml
-   
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  # Making this more generic
+        pip install pytest pytest-md pytest-md-report toml
+
     - name: Install Package
       run: |
         pip install .
 
-    - name: Run Tests and Save Results
-      id: pytest_results
+    - name: Run Tests
+      if: success() || failure()
       run: |
-        pytest tests/ --tb=short --maxfail=1 --junitxml=report.xml | tee pytest_output.txt
+        mkdir logs/
+        pytest --md-report --md-report-verbose=1 --md-report-zeros=number --md-report-output=logs/summary.md
+        pytest -p no:md-report -p no:warnings --no-header -r fE > logs/errors.log
+        pytest -p no:md-report --no-header -q -W ignore -r w > logs/warnings.log
 
         PASSED=$(python -c "import re; f=open('pytest_output.txt').read(); match=re.search(r'(\d+) passed', f); print(match.group(1) if match else '0')")
-        FAILED=$(grep -oP '\d+(?= failed)' pytest_output.txt || echo "0")
+        FAILED=$(grep -oP '\d+(?= failed)' pytest_output.txt || echo "0")pip install pytest-md-report
+
+    - name: Upload Pytest Log Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: pytest-logs
+        path: logs/*
+        retention-days: 7
