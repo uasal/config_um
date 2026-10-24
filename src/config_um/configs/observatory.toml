@@ -19,4 +19,4 @@ offset_measure_time_fine = "10second" # TBR from mission lifetime budget, specul
 offset_measure_time_coarse = "60second" # TBR from mission lifetime budget, speculated requirement value by P. Ingraham 2025-03-10
 
 [general]
-mission_length = "3year" # Speculated requirement value by P. Ingraham 2025-03-10
+mission_length = "3sec" # Speculated requirement value by P. Ingraham 2025-03-10
