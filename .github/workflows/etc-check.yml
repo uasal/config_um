@@ -82,8 +82,10 @@ jobs:
       # Install Current Config Package
     - name: Install Config Package
       run: |
-        pip install --force-reinstall --no-deps .
+        pip uninstall -y config_um
+        pip install .
         pip show -f config_um | head
+        pip check
 
       # Run pytests from ETC Packages
     - name: Run ETC Tests
