@@ -52,3 +52,7 @@ config_project_template.egg-info/
 
 # Ignore setuptools_scm version file
 _version.py
+
+# Ignore logs and pytest summaries
+logs/*
+logs
