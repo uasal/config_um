@@ -77,13 +77,14 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install pytest pytest-md pytest-md-report toml
-        pip install "./${{ matrix.path }}" ".[dev]"
+        pip install "./${{ matrix.path }}[dev]"
 
-      # Install Current Config Package
-    - name: Install Config Package
+      # Install & Checking Config Packages
+    - name: Check Installed Configs
       run: |
         pip uninstall -y config_um
         pip install .
+        pip list | grep -i config
         pip show -f config_um | head
         pip check
 
