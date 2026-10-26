@@ -1,0 +1,115 @@
+name: Test Config w/ETC
+
+# CI Variables
+env:
+    # Pytest Outputs
+    SUMMARY: logs/summary.md
+    ERRORS: logs/errors.log
+    RAW: logs/pytest_raw_output.txt
+    # Branch value: manual override > org variable value > develop
+    DEFAULT_BRANCH: ${{ inputs.override_value || vars.BRANCH || 'develop' }}
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened,reopened,edited,synchronize]
+  # Allowing workflow to run from actions manually
+  workflow_dispatch:
+    inputs:
+      override_value:
+        description: Add ETC branch to use if no matching branch exists based on current branch CI is running from.
+        required: false
+
+# For PR commenting with summary
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  test-etc:
+    name: ETC ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ESC
+            repo: uasal/stp_etc_esc
+            path: stp_etc_esc
+          - name: WCC
+            repo: uasal/stp_etc_imaging
+            path: stp_etc_imaging
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v7
+
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+        cache-dependency-path: pyproject.toml
+
+    - name: Check Matching Branches
+      id: check_branch
+      env:
+        CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
+      run: |
+        URL="https://github.com/${{ matrix.repo }}.git"
+        if git ls-remote --exit-code --heads "$URL" "refs/heads/$CURRENT_BRANCH" > /dev/null 2>&1; then
+          echo "ref=$CURRENT_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Using matching branch: '$CURRENT_BRANCH' in ${{ matrix.repo }}"
+        else
+          echo "ref=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "No '$CURRENT_BRANCH' branch found in ${{ matrix.repo }}; using '$DEFAULT_BRANCH'"
+        fi
+
+    - name: Checkout ETC Repo
+      uses: actions/checkout@v7
+      with:
+        repository: ${{ matrix.repo }}
+        ref: ${{ steps.check_branch.outputs.ref }}
+        path: ${{ matrix.path }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest pytest-md pytest-md-report toml
+        pip install "./${{ matrix.path }}" ".[dev]"
+
+      # Install Current Config Package
+    - name: Install Config Package
+      run: |
+        pip install --force-reinstall --no-deps .
+        pip show -f config_um | head
+
+      # Run pytests from ETC Packages
+    - name: Run ETC Tests
+      working-directory: ${{ matrix.path }}
+      run: |
+        TEST_EXIT_CODE=0
+        mkdir -p logs/
+
+        pytest --md-report --md-report-verbose=1 --md-report-zeros=number --md-report-output=${{env.SUMMARY}} > ${{env.RAW}} || TEST_EXIT_CODE=$?
+        pytest -p no:md-report -p no:warnings --no-header -r fE > ${{env.ERRORS}} || true
+
+        exit $TEST_EXIT_CODE
+
+      # Uploading pytest logs generated for each ETC tested with config
+    - name: Upload Pytest Logs
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ETC-${{ matrix.name }}-pytest-logs
+        path: ${{ matrix.path }}/logs/*
+        retention-days: 7
+
+      # Comment on PR with ETC Summary Results (for each ETC)
+    - name: Comment PR w/ ETC Summary
+      if: ${{ !cancelled() && github.event_name == 'pull_request' && hashFiles(format('{0}/{1}', matrix.path, env.SUMMARY)) != '' }}
+      uses: marocchino/sticky-pull-request-comment@v3
+      with:
+        header: etc-${{ matrix.name }}-check
+        path: ${{ matrix.path }}/${{ env.SUMMARY }}
